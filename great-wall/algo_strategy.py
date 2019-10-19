@@ -72,24 +72,45 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def build_the_wall(self, game_state):
         filters_built = 0
+        encryptors_built = 0
+        destructors_built = 0
         gamelib.debug_write('Building wall')
-        filters_built += game_state.attempt_spawn(
+
+        # Adding left side corner shield
+        destructors_built += game_state.attempt_spawn(
             DESTRUCTOR, self.get_line_points([0, 13], [2, 13]))
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, self.get_line_points([2, 13], [10, 5]))
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, self.get_line_points([17, 5], [25, 13]))
-        filters_built += game_state.attempt_spawn(
+        # Adding right side corner shield
+        destructors_built += game_state.attempt_spawn(
             DESTRUCTOR, self.get_line_points([25, 13], [27, 13]))
 
+        # Adding V of power
+        # First, putting down two destructors on each side
+        # [5,10] [8,7]
+        destructors_built += game_state.attempt_spawn(
+            DESTRUCTOR, ([5, 10], [8, 7]))
+        # [19, 7] [22, 10]
+        destructors_built += game_state.attempt_spawn(
+            DESTRUCTOR, ([19, 7], [22, 10]))
+        # Then, draw lines of encryptors
+        encryptors_built += game_state.attempt_spawn(
+            ENCRYPTOR, self.get_line_points([2, 13], [10, 5]))
+        encryptors_built += game_state.attempt_spawn(
+            ENCRYPTOR, self.get_line_points([17, 5], [25, 13]))
+
+        # Building the channel
+        encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [11, 5])
+        encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [16, 5])
+        destructors_built += game_state.attempt_spawn(
+            DESTRUCTOR, ([12, 4], [12, 5], [15, 4], [15, 5]))
+
         # Shields for destructors
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[12, 4], [15, 4]])
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[11, 5], [12, 5]])
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[15, 5], [16, 5]])
-        gamelib.debug_write('Built ' + str(filters_built) + ' filters')
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[12, 4], [15, 4]])
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[11, 5], [12, 5]])
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[15, 5], [16, 5]])
+        gamelib.debug_write("Built " + str(filters_built) + " filters")
 
         return filters_built
 
@@ -291,10 +312,10 @@ class AlgoStrategy(gamelib.AlgoCore):
         return filtered
 
     def getNumDestructors(self, game_state):
-        posLocs = boardMap()
+        posLocs = self.boardMap()
         i = 0
         z = 0
-        enemyLocs = getEnemyLocs()
+        enemyLocs = self.getEnemyLocs()
 
         for el in enemyLocs:
             numDest = len(game_state.getAttackers([el[1], el[2]], 0))
@@ -323,38 +344,37 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write(
                     "All locations: {}".format(self.scored_on_locations))
 
-    def getEnemyLocs():
+    def getEnemyLocs(self):
         enemyLocs = []
         ylocs = range(14, 28)
         i = 0
         for y in ylocs:
             xlocs = range(i, 28-i, 1)
             for x in xlocs:
-                enemyLocs.append([x,y])
+                enemyLocs.append([x, y])
             i += 1
         return enemyLocs
 
-    def getFriendlyLocs():
+    def getFriendlyLocs(self):
         friendlyLocs = []
         ylocs = range(0, 14)
         i = 0
         for y in ylocs:
             xlocs = range(13-i, 14+i, 1)
             for x in xlocs:
-                friendlyLocs.append([x,y])
+                friendlyLocs.append([x, y])
             i += 1
         return friendlyLocs
 
     def boardMap(self):
-        enemyLocs = getEnemyLocs()
-        friendlyLocs = getFriendlyLocs()
+        enemyLocs = self.getEnemyLocs()
+        friendlyLocs = self.getFriendlyLocs()
         bm = np.ones((28, 28))*-1
         for el in enemyLocs:
             bm[el[0], el[1]] = 0
         for fl in friendlyLocs:
             bm[fl[0], fl[1]] = 0
         return bm
-
 
 
 if __name__ == "__main__":
