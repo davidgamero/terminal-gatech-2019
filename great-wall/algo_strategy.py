@@ -235,9 +235,12 @@ class AlgoStrategy(gamelib.AlgoCore):
         as shown in the on_action_frame function
         """
         for location in self.scored_on_locations:
-            # Build destructor one space above so that it doesn't block our own edge spawn locations
-            build_location = [location[0], location[1]+1]
-            game_state.attempt_spawn(DESTRUCTOR, build_location)
+            if(location[1] > 10):
+                # Build destructor one space above so that it doesn't block our own edge spawn locations
+                build_location = [location[0], location[1]]
+                gamelib.debug_write(
+                    'Building reactive defense for corner y>10  at ' + str(build_location))
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
 
     def stall_with_scramblers(self, game_state):
         """
