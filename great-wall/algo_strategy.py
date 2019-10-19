@@ -4,6 +4,7 @@ import math
 import warnings
 from sys import maxsize
 import json
+import numpy as np
 
 
 """
@@ -289,6 +290,22 @@ class AlgoStrategy(gamelib.AlgoCore):
                 filtered.append(location)
         return filtered
 
+    def getNumDestructors(self, game_state):
+        posLocs = np.zeros((210, 3))
+        i = 0
+        z = 0
+        ylocs = np.arange(14, 28, 1)
+        for j in ylocs:
+            xlocs = np.arange(i, 28-i, 1)
+            for k in xlocs:
+                posLocs[z, 0] = j
+                posLocs[z, 1] = k
+                numDest = len(game_state.getAttackers([j, k], 0))
+                posLocs(3, z) = numDest
+                z=z+1
+            i=i+1
+        return posLocs
+
     def on_action_frame(self, turn_string):
         """
         This is the action frame of the game. This function could be called
@@ -310,6 +327,28 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.scored_on_locations.append(location)
                 gamelib.debug_write(
                     "All locations: {}".format(self.scored_on_locations))
+
+    def getEnemyLocs():
+        enemyLocs = []
+        ylocs = np.arange(14, 28, 1)
+        i = 0
+        for y in ylocs:
+            xlocs = np.arange(i, 28-i, 1)
+            for x in xlocs:
+                enemyLocs.append([x,y])
+            i += 1
+        return enemyLocs
+
+    def getFriendlyLocs():
+        friendlyLocs = []
+        ylocs = np.arrange(0, 13, 1)
+        i = 0
+        for y in ylocs:
+            xlocs = np.arrange(13-i, 14+i, 1)
+            for x in xlocs:
+                friendlyLocs.append([x,y])
+            i += 1
+        return friendlyLocs
 
 
 if __name__ == "__main__":
