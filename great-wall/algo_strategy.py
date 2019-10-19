@@ -10,12 +10,12 @@ import json
 Most of the algo code you write will be in this file unless you create new
 modules yourself. Start by modifying the 'on_turn' function.
 
-Advanced strategy tips: 
+Advanced strategy tips:
 
   - You can analyze action frames by modifying on_action_frame function
 
-  - The GameState.map object can be manually manipulated to create hypothetical 
-  board states. Though, we recommended making a copy of the map to preserve 
+  - The GameState.map object can be manually manipulated to create hypothetical
+  board states. Though, we recommended making a copy of the map to preserve
   the actual current map state.
 """
 
@@ -28,8 +28,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         gamelib.debug_write('Random seed: {}'.format(seed))
 
     def on_game_start(self, config):
-        """ 
-        Read in config and perform any initial setup here 
+        """
+        Read in config and perform any initial setup here
         """
         gamelib.debug_write('Configuring your custom algo strategy...')
         self.config = config
@@ -66,15 +66,51 @@ class AlgoStrategy(gamelib.AlgoCore):
         game_state.submit_turn()
 
     def build_the_wall(self, game_state):
-        game_state.attempt_spawn(FILTER, [0, 13], 1)
-        return
+        filters_built = 0
+        gamelib.debug_write('Building wall')
+        filters_built += game_state.attempt_spawn(
+            FILTER, self.get_line_points([0, 13], [2, 13]))
+        filters_built += game_state.attempt_spawn(
+            FILTER, self.get_line_points([2, 13], [11, 4]))
+        filters_built += game_state.attempt_spawn(
+            FILTER, self.get_line_points([16, 4], [25, 13]))
+        filters_built += game_state.attempt_spawn(
+            FILTER, self.get_line_points([25, 13], [27, 13]))
+        gamelib.debug_write('Built ' + str(filters_built) + ' filters')
+
+        return filters_built
 
     """
-    Return a list of all locations between the coordinate pairs of start and end
+    Return a list of all points between the coordinate pairs of start and end
     """
 
-    def get_line_locations(self, start, end):
-        return
+    def get_line_points(self, start, end):
+        line_points = []
+
+        # Flip so we always go the right
+        if start[0] > end[0]:
+            temp = start
+            start = end
+            end = temp
+
+        x1 = start[0]
+        y1 = start[1]
+        x2 = end[0]
+        y2 = end[1]
+
+        slope = (y2-y1)/(x2-x1)
+        x = x1
+        y = y1
+
+        while(x <= x2):
+
+            new_point = [x, round(y)]
+            if new_point not in line_points:
+                line_points.append(new_point)
+
+            x += 1
+            y += slope
+        return line_points
 
     """
     NOTE: All the methods after this point are part of the sample starter-algo
@@ -138,7 +174,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     def build_reactive_defense(self, game_state):
         """
         This function builds reactive defenses based on where the enemy scored on us from.
-        We can track where the opponent scored by looking at events in action frames 
+        We can track where the opponent scored by looking at events in action frames
         as shown in the on_action_frame function
         """
         for location in self.scored_on_locations:
@@ -167,7 +203,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
             game_state.attempt_spawn(SCRAMBLER, deploy_location)
             """
-            We don't have to remove the location since multiple information 
+            We don't have to remove the location since multiple information
             units can occupy the same space.
             """
 
@@ -196,7 +232,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     def least_damage_spawn_location(self, game_state, location_options):
         """
         This function will help us guess which location is the safest to spawn moving units from.
-        It gets the path the unit will take then checks locations on that path to 
+        It gets the path the unit will take then checks locations on that path to
         estimate the path's damage risk.
         """
         damages = []
@@ -231,7 +267,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def on_action_frame(self, turn_string):
         """
-        This is the action frame of the game. This function could be called 
+        This is the action frame of the game. This function could be called
         hundreds of times per turn and could slow the algo down so avoid putting slow code here.
         Processing the action frames is complicated so we only suggest it if you have time and experience.
         Full doc on format of a game frame at: https://docs.c1games.com/json-docs.html
