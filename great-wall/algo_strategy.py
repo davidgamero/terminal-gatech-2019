@@ -5,6 +5,7 @@ import warnings
 from sys import maxsize
 import json
 import numpy as np
+import buildingFunctions
 
 import matRot as matRot
 
@@ -126,12 +127,13 @@ class AlgoStrategy(gamelib.AlgoCore):
         return filters_built
 
     def fortify_the_wall(self, game_state):
-        destructor_locations = [[11, 4], [16, 4], [12, 2], [15, 2]]
+        destructor_locations = [[12, 2], [15, 2]]
         game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
 
-        encryptor_locations = [[12, 1], [15, 1],
-                               [13, 0], [14, 0], [13, 1], [14, 1]]
+        encryptor_locations = buildingFunctions.mirrorCoords([[13, 1],[13, 2]])
         game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+
+
         return
 
     def randomAttack(self, game_state):
