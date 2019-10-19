@@ -6,6 +6,8 @@ from sys import maxsize
 import json
 import numpy as np
 
+import matRot as matRot
+
 
 """
 Most of the algo code you write will be in this file unless you create new
@@ -64,9 +66,17 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         self.build_the_wall(game_state)
 
+        # Add extra destructors in corners if hit
+        self.build_reactive_defense(game_state)
+
+        # Fortify with extra encryptors and destructors at the mouth
         self.fortify_the_wall(game_state)
 
         self.randomAttack(game_state)
+
+        gamelib.debug_write("Destructor Heatmap...")
+
+        self.print_enemy_heatmap(game_state)
 
         game_state.submit_turn()
 
@@ -110,7 +120,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         #     DESTRUCTOR, [[11, 5], [12, 5]])
         # filters_built += game_state.attempt_spawn(
         #     DESTRUCTOR, [[15, 5], [16, 5]])
-        gamelib.debug_write("Built " + str(filters_built) + " filters")
+        gamelib.debug_write("Built " + str(destructors_built) +
+                            "D " + str(encryptors_built) + "E")
 
         return filters_built
 
@@ -224,9 +235,18 @@ class AlgoStrategy(gamelib.AlgoCore):
         as shown in the on_action_frame function
         """
         for location in self.scored_on_locations:
-            # Build destructor one space above so that it doesn't block our own edge spawn locations
-            build_location = [location[0], location[1]+1]
-            game_state.attempt_spawn(DESTRUCTOR, build_location)
+            if(location[1] > 10):
+                # Build destructor one space above so that it doesn't block our own edge spawn locations
+                build_location = [location[0], location[1]]
+                gamelib.debug_write(
+                    'Building reactive defense for corner y>10  at ' + str(build_location))
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+
+            if(location[1] < 3):
+                build_location = [location[0], location[1]]
+                gamelib.debug_write(
+                    'Building reactive defense for mouth of screen  at ' + str(build_location))
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
 
     def stall_with_scramblers(self, game_state):
         """
@@ -313,14 +333,22 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def getNumDestructors(self, game_state):
         posLocs = self.boardMap()
-        i = 0
-        z = 0
         enemyLocs = self.getEnemyLocs()
 
         for el in enemyLocs:
-            numDest = len(game_state.getAttackers([el[0], el[1]], 0))
+            numDest = len(game_state.get_attackers([el[0], el[1]], 0))
             posLocs[el[0], el[1]] += numDest
         return posLocs
+
+    def print_enemy_heatmap(self, game_state):
+        d = self.getNumDestructors(game_state)
+        d = matRot.rotateMatrix(d)
+
+        heatMap = map(lambda row:
+                      " ".join(map(lambda item: '_' if item == -1 else str(int(item)), row)), d)
+        for row in heatMap:
+            gamelib.debug_write(row)
+        return
 
     def on_action_frame(self, turn_string):
         """
