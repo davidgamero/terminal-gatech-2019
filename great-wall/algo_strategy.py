@@ -291,19 +291,14 @@ class AlgoStrategy(gamelib.AlgoCore):
         return filtered
 
     def getNumDestructors(self, game_state):
-        posLocs = np.zeros((210, 3))
+        posLocs = boardMap()
         i = 0
         z = 0
-        ylocs = np.arange(14, 28, 1)
-        for j in ylocs:
-            xlocs = np.arange(i, 28-i, 1)
-            for k in xlocs:
-                posLocs[z, 0] = j
-                posLocs[z, 1] = k
-                numDest = len(game_state.getAttackers([j, k], 0))
-                posLocs(3, z) = numDest
-                z=z+1
-            i=i+1
+        enemyLocs = getEnemyLocs()
+
+        for el in enemyLocs:
+            numDest = len(game_state.getAttackers([el[1], el[2]], 0))
+            posLocs[el[1], el[2]] += numDest
         return posLocs
 
     def on_action_frame(self, turn_string):
@@ -330,10 +325,10 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def getEnemyLocs():
         enemyLocs = []
-        ylocs = np.arange(14, 28, 1)
+        ylocs = range(14, 28)
         i = 0
         for y in ylocs:
-            xlocs = np.arange(i, 28-i, 1)
+            xlocs = range(i, 28-i, 1)
             for x in xlocs:
                 enemyLocs.append([x,y])
             i += 1
@@ -341,14 +336,25 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def getFriendlyLocs():
         friendlyLocs = []
-        ylocs = np.arrange(0, 13, 1)
+        ylocs = range(0, 14)
         i = 0
         for y in ylocs:
-            xlocs = np.arrange(13-i, 14+i, 1)
+            xlocs = range(13-i, 14+i, 1)
             for x in xlocs:
                 friendlyLocs.append([x,y])
             i += 1
         return friendlyLocs
+
+    def boardMap(self):
+        enemyLocs = getEnemyLocs()
+        friendlyLocs = getFriendlyLocs()
+        bm = np.ones((28, 28)).*-1
+        for el in enemyLocs:
+            bm[el[0], el[1]] = 0
+        for fl in friendlyLocs:
+            bm[fl[0], fl[1]] = 0
+        return bm
+
 
 
 if __name__ == "__main__":
