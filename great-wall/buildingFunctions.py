@@ -1,4 +1,4 @@
-
+import numpy as np
 
 def mirrorCoords(locations):
     rightSide = []
@@ -52,7 +52,9 @@ def genLeftColumnDamage(heatMap):
 
     for lx in leftstartx:
         colInd = getColumnsLeft(lx)
-        sumDam = sum(heatMap[colInd])
+        sumDam = 0
+        for c in colInd:
+            sumDam += heatMap[c[0],c[1]]
         leftDamage.append(sumDam)
     return leftDamage
 
@@ -63,7 +65,8 @@ def genRightColumnDamage(heatMap):
     rightDamage = []
     for rx in rightstartx:
         colInd = getColumnsRight(rx)
-        sumDam = sum(heatMap[colInd])
+        for c in colInd:
+            sumDam += heatMap[c[0],c[1]]
         rightDamage.append(sumDam)
     return rightDamage
 
@@ -75,4 +78,4 @@ def findMinColumn(heatMap):
     damage = leftDamage + rightDamage
 
     minDamageLoc = damage.index(min(damage))
-    return minDamageLoc
+    return minDamageLoc #the ending location where minimum damage is taken
