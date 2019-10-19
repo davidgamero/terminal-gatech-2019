@@ -1,4 +1,5 @@
 
+
 def mirrorCoords(locations):
     rightSide = []
     for locs in locations:
@@ -40,3 +41,28 @@ def getColumnsRight(startx):
 
     columnIndices.append([x,y])
     return columnIndices
+
+def genLeftColumnDamage(heatMap):
+
+    leftstartx = range(0,14)
+    leftDamage = []
+
+
+
+
+    for lx in leftstartx:
+        colInd = getColumnsLeft(lx)
+        sumDam = sum(heatMap[colInd])
+        leftDamage.append(sumDam)
+    return leftDamage
+
+
+
+def genRightColumnDamage(heatMap):
+    rightstartx = range(14,28)
+    rightDamage = []
+    for rx in rightstartx:
+        colInd = getColumnsRight(rx)
+        sumDam = sum(heatMap[colInd])
+        rightDamage.append(sumDam)
+    return rightDamage
