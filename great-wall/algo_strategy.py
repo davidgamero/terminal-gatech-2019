@@ -367,7 +367,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     def boardMap(self):
         enemyLocs = getEnemyLocs()
         friendlyLocs = getFriendlyLocs()
-        bm = np.ones((28, 28)).*-1
+        bm = np.ones((28, 28))*-1
         for el in enemyLocs:
             bm[el[0], el[1]] = 0
         for fl in friendlyLocs:
