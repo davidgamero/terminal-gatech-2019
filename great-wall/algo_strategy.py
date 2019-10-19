@@ -303,7 +303,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 numDest = len(game_state.getAttackers([j, k], 0))
                 posLocs(3, z) = numDest
                 z=z+1
-                i=i+1
+            i=i+1
+        return posLocs
 
     def on_action_frame(self, turn_string):
         """
