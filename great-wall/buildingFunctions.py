@@ -4,5 +4,5 @@ def mirrorCoords(locations):
     for locs in locations:
         rightSide.append([27-locs[0], locs[1]])
         #print(output)
-    locations.append(rightSide)
+    locations+=rightSide
     return locations
