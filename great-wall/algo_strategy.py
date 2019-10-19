@@ -73,21 +73,21 @@ class AlgoStrategy(gamelib.AlgoCore):
         filters_built = 0
         gamelib.debug_write('Building wall')
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([0, 13], [2, 13]))
+            DESTRUCTOR, self.get_line_points([0, 13], [2, 13]))
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([2, 13], [10, 5]))
+            DESTRUCTOR, self.get_line_points([2, 13], [10, 5]))
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([17, 5], [25, 13]))
+            DESTRUCTOR, self.get_line_points([17, 5], [25, 13]))
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([25, 13], [27, 13]))
+            DESTRUCTOR, self.get_line_points([25, 13], [27, 13]))
 
         # Shields for destructors
         filters_built += game_state.attempt_spawn(
-            FILTER, [[12, 4], [15, 4]])
+            DESTRUCTOR, [[12, 4], [15, 4]])
         filters_built += game_state.attempt_spawn(
-            FILTER, [[11, 5], [12, 5]])
+            DESTRUCTOR, [[11, 5], [12, 5]])
         filters_built += game_state.attempt_spawn(
-            FILTER, [[15, 5], [16, 5]])
+            DESTRUCTOR, [[15, 5], [16, 5]])
         gamelib.debug_write('Built ' + str(filters_built) + ' filters')
 
         return filters_built
