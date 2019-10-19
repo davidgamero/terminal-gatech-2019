@@ -100,7 +100,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # Building the channel
         encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [11, 5])
         encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [16, 5])
-        desctructors_built += game_state.attempt_spawn(
+        destructors_built += game_state.attempt_spawn(
             DESTRUCTOR, ([12, 4], [12, 5], [15, 4], [15, 5]))
 
         # Shields for destructors
