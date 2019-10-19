@@ -318,8 +318,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         enemyLocs = self.getEnemyLocs()
 
         for el in enemyLocs:
-            numDest = len(game_state.getAttackers([el[1], el[2]], 0))
-            posLocs[el[1], el[2]] += numDest
+            numDest = len(game_state.getAttackers([el[0], el[1]], 0))
+            posLocs[el[0], el[1]] += numDest
         return posLocs
 
     def on_action_frame(self, turn_string):
@@ -360,7 +360,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         ylocs = range(0, 14)
         i = 0
         for y in ylocs:
-            xlocs = range(13-i, 14+i, 1)
+            xlocs = range(13-i, 15+i, 1)
             for x in xlocs:
                 friendlyLocs.append([x, y])
             i += 1
