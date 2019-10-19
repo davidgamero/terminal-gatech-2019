@@ -65,6 +65,7 @@ def genRightColumnDamage(heatMap):
     rightDamage = []
     for rx in rightstartx:
         colInd = getColumnsRight(rx)
+        sumDam = 0
         for c in colInd:
             sumDam += heatMap[c[0],c[1]]
         rightDamage.append(sumDam)
