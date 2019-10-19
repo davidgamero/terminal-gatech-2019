@@ -74,4 +74,5 @@ def findMinColumn(heatMap):
 
     damage = leftDamage + rightDamage
 
-    minDamageloc = damage.index(min(damage))
+    minDamageLoc = damage.index(min(damage))
+    return minDamageLoc
