@@ -242,6 +242,12 @@ class AlgoStrategy(gamelib.AlgoCore):
                     'Building reactive defense for corner y>10  at ' + str(build_location))
                 game_state.attempt_spawn(DESTRUCTOR, build_location)
 
+            if(location[1] < 3):
+                build_location = [location[0], location[1]]
+                gamelib.debug_write(
+                    'Building reactive defense for mouth of screen  at ' + str(build_location))
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+
     def stall_with_scramblers(self, game_state):
         """
         Send out Scramblers at random locations to defend our base from enemy moving units.
