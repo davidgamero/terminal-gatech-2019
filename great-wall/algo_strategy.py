@@ -4,6 +4,7 @@ import math
 import warnings
 from sys import maxsize
 import json
+import numpy as np
 
 
 """
@@ -288,6 +289,21 @@ class AlgoStrategy(gamelib.AlgoCore):
             if not game_state.contains_stationary_unit(location):
                 filtered.append(location)
         return filtered
+
+    def getNumDestructors(self, game_state):
+        posLocs = np.zeros((210, 3))
+        i = 0
+        z = 0
+        ylocs = np.arange(14, 28, 1)
+        for j in ylocs:
+            xlocs = np.arange(i, 28-i, 1)
+            for k in xlocs:
+                posLocs[z, 0] = j
+                posLocs[z, 1] = k
+                numDest = len(game_state.getAttackers([j, k], 0))
+                posLocs(3, z) = numDest
+                z=z+1
+                i=i+1
 
     def on_action_frame(self, turn_string):
         """
