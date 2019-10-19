@@ -72,24 +72,43 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def build_the_wall(self, game_state):
         filters_built = 0
+        encryptors_built = 0
+        destructors_built = 0
         gamelib.debug_write('Building wall')
-        filters_built += game_state.attempt_spawn(
+
+        # Adding left side corner shield 
+        destructors_built += game_state.attempt_spawn(
             DESTRUCTOR, self.get_line_points([0, 13], [2, 13]))
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, self.get_line_points([2, 13], [10, 5]))
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, self.get_line_points([17, 5], [25, 13]))
-        filters_built += game_state.attempt_spawn(
+        # Adding right side corner shield
+        destructors_built += game_state.attempt_spawn(
             DESTRUCTOR, self.get_line_points([25, 13], [27, 13]))
+        
+        # Adding V of power
+        # First, putting down two destructors on each side
+        # [5,10] [8,7]
+        destructors_built += game_state.attempt_spawn(DESTRUCTOR, ([5,10],[8,7]))
+        # [19, 7] [22, 10]
+        destructors_built += game_state.attempt_spawn(DESTRUCTOR, ([19, 7],[22, 10]))
+        # Then, draw lines of encryptors
+        encryptors_built += game_state.attempt_spawn(
+            ENCRYPTOR, self.get_line_points([2, 13], [10, 5]))
+        encryptors_built += game_state.attempt_spawn(
+            ENCRYPTOR, self.get_line_points([17, 5], [25, 13]))
+
+        # Building the channel
+        encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [11, 5])
+        encryptors_built += game_state.attempt_spawn(ENCRYPTOR, [16, 5])
+        desctructors_built += game_state.attempt_spawn(DESTRUCTOR, ([12, 4],[12, 5],[15, 4],[15,5]))
 
         # Shields for destructors
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[12, 4], [15, 4]])
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[11, 5], [12, 5]])
-        filters_built += game_state.attempt_spawn(
-            DESTRUCTOR, [[15, 5], [16, 5]])
-        gamelib.debug_write('Built ' + str(filters_built) + ' filters')
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[12, 4], [15, 4]])
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[11, 5], [12, 5]])
+        # filters_built += game_state.attempt_spawn(
+        #     DESTRUCTOR, [[15, 5], [16, 5]])
+        # gamelib.debug_write('Built ' + str(filters_built) + ' filters')
+
 
         return filters_built
 
