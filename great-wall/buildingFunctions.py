@@ -66,3 +66,12 @@ def genRightColumnDamage(heatMap):
         sumDam = sum(heatMap[colInd])
         rightDamage.append(sumDam)
     return rightDamage
+
+
+def findMinColumn(heatMap):
+    rightDamage = genRightColumnDamage(heatMap)
+    leftDamage = genLeftColumnDamage(heatMap)
+
+    damage = leftDamage + rightDamage
+
+    minDamageloc = damage.index(min(damage))
