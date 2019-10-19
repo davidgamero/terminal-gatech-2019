@@ -328,6 +328,28 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write(
                     "All locations: {}".format(self.scored_on_locations))
 
+    def getEnemyLocs():
+        enemyLocs = []
+        ylocs = np.arange(14, 28, 1)
+        i = 0
+        for y in ylocs:
+            xlocs = np.arange(i, 28-i, 1)
+            for x in xlocs:
+                enemyLocs.append([x,y])
+            i += 1
+        return enemyLocs
+
+    def getFriendlyLocs():
+        friendlyLocs = []
+        ylocs = np.arrange(0, 13, 1)
+        i = 0
+        for y in ylocs:
+            xlocs = np.arrange(13-i, 14+i, 1)
+            for x in xlocs:
+                friendlyLocs.append([x,y])
+            i += 1
+        return friendlyLocs
+
 
 if __name__ == "__main__":
     algo = AlgoStrategy()
