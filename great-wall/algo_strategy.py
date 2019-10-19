@@ -63,6 +63,10 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         self.build_the_wall(game_state)
 
+        self.fortify_the_wall(game_state)
+
+        self.randomAttack(game_state)
+
         game_state.submit_turn()
 
     def build_the_wall(self, game_state):
@@ -71,15 +75,35 @@ class AlgoStrategy(gamelib.AlgoCore):
         filters_built += game_state.attempt_spawn(
             FILTER, self.get_line_points([0, 13], [2, 13]))
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([2, 13], [11, 4]))
+            FILTER, self.get_line_points([2, 13], [10, 5]))
         filters_built += game_state.attempt_spawn(
-            FILTER, self.get_line_points([16, 4], [25, 13]))
+            FILTER, self.get_line_points([17, 5], [25, 13]))
         filters_built += game_state.attempt_spawn(
             FILTER, self.get_line_points([25, 13], [27, 13]))
+
+        # Shields for destructors
+        filters_built += game_state.attempt_spawn(
+            FILTER, [[12, 4], [15, 4]])
+        filters_built += game_state.attempt_spawn(
+            FILTER, [[11, 5], [12, 5]])
+        filters_built += game_state.attempt_spawn(
+            FILTER, [[15, 5], [16, 5]])
         gamelib.debug_write('Built ' + str(filters_built) + ' filters')
 
         return filters_built
 
+    def fortify_the_wall(self, game_state):
+        destructor_locations = [[11, 4], [16, 4], [12, 2], [15, 2]]
+        game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
+
+        encryptor_locations = [[12, 1], [15, 1],
+                               [13, 0], [14, 0], [13, 1], [14, 1]]
+        game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+        return
+
+    def randomAttack(self, game_state):
+        game_state.attempt_spawn(PING, random.choice([[3, 10], [24, 10]]), 10)
+        return
     """
     Return a list of all points between the coordinate pairs of start and end
     """
